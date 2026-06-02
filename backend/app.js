@@ -19,6 +19,12 @@ app.use(helmet());
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Inventory API Running',
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -215,7 +221,7 @@ async function getOrder(id) {
 
 initDb()
   .then(() => {
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       console.log(`Inventory API listening on port ${port}`);
     });
   })
