@@ -30,27 +30,36 @@ function App() {
   const [customerForm, setCustomerForm] = useState({ full_name: '', email: '', phone_number: '' });
   const [orderForm, setOrderForm] = useState({ customer_id: '', product_id: '', quantity: 1 });
 
-  const lowStock = useMemo(() => products.filter((product) => product.quantity_in_stock <= 5), [products]);
+  const lowStock = useMemo(() => {
+  if (!Array.isArray(products)) return [];
 
-  async function loadData() {
-    setLoading(true);
-    try {
-      const [productData, customerData, orderData, dashboardData] = await Promise.all([
+  return products.filter(
+    (product) => product.quantity_in_stock <= 5
+  );
+}, [products]);
+
+async function loadData() {
+  setLoading(true);
+
+  try {
+    const [productData, customerData, orderData, dashboardData] =
+      await Promise.all([
         api('/products'),
         api('/customers'),
         api('/orders'),
         api('/dashboard'),
       ]);
-      setProducts(productData);
-      setCustomers(customerData);
-      setOrders(orderData);
-      setSummary(dashboardData);
-    } catch (error) {
-      flash(error.message, 'error');
-    } finally {
-      setLoading(false);
-    }
+
+    setProducts(Array.isArray(productData) ? productData : []);
+    setCustomers(Array.isArray(customerData) ? customerData : []);
+    setOrders(Array.isArray(orderData) ? orderData : []);
+    setSummary(dashboardData || {});
+  } catch (error) {
+    flash(error.message, 'error');
+  } finally {
+    setLoading(false);
   }
+}
 
   useEffect(() => {
     loadData();
