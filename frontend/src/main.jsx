@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { AlertCircle, Boxes, CheckCircle2, ClipboardList, PackagePlus, RefreshCw, Trash2, UserPlus, Users } from 'lucide-react';
 import './styles.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL ;
 
 async function api(path, options = {}) {
   const response = await fetch(`${API_URL}${path}`, {
