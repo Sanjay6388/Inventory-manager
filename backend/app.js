@@ -1,22 +1,39 @@
 require('dotenv').config();
 
-const cors = require('cors');
 const express = require('express');
+const cors = require('cors');
 const helmet = require('helmet');
 
 const { initDb, pool, query, transaction } = require('./src/db');
 const { HttpError, asyncHandler, handleError } = require('./src/errors');
-const { customerSchema, idParam, orderSchema, productSchema } = require('./src/validators');
+const {
+  customerSchema,
+  idParam,
+  orderSchema,
+  productSchema,
+} = require('./src/validators');
 
 const app = express();
+
 const port = Number(process.env.PORT || 8000);
-const corsOrigins = (process.env.BACKEND_CORS_ORIGINS || 'http://localhost:5173,http://localhost:3000')
-  .split(',')
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+
+const corsOrigins = [
+  'https://inventory-manager-one-iota.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
 
 app.use(helmet());
-app.use(cors({ origin: corsOrigins, credentials: true }));
+
+app.use(cors({
+  origin: corsOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+app.options('*', cors());
+
 app.use(express.json());
 
 app.get('/', (req, res) => {

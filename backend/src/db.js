@@ -14,8 +14,6 @@ const pool = new Pool({
       : false,
 });
 
-
-
 pool.on('error', (err) => {
   console.error('❌ PostgreSQL Error:', err);
 });
